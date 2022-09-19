@@ -10,6 +10,8 @@ const [comments, setComments] = useState([
   'Post muito bacana.'
 ]);
 const [newCommentText, setNewCommentText] = useState('');
+const isNewCommentEmpty = newCommentText.length === 0;
+
   const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
     locale: ptBR,
   });
@@ -26,6 +28,7 @@ const [newCommentText, setNewCommentText] = useState('');
   }
 
   function handleNewCommentChange() {
+    event.target.setCustomValidity('');
     setNewCommentText(event.target.value);
   }
 
@@ -34,6 +37,10 @@ const [newCommentText, setNewCommentText] = useState('');
       return comment !== commentToDelete;
     })
     setComments(commentsWithoutDeletedOne);
+  }
+
+  function handleNewCommentInvalid() {
+    event.target.setCustomValidity('Esse campo é obrigatório!');
   }
 
   return(
@@ -66,9 +73,11 @@ const [newCommentText, setNewCommentText] = useState('');
           placeholder='Deixe um comentário'
           value={newCommentText}
           onChange={handleNewCommentChange}
+          onInvalid={handleNewCommentInvalid}
+          required={true} // enviar sem nada preenchido
         />
         <footer>
-          <button type='submit'>Publicar</button>
+          <button disabled={isNewCommentEmpty} type='submit'>Publicar</button>
         </footer>
       </form>
       <div className={styles.commentList}>
